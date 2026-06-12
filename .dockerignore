@@ -1,7 +1,7 @@
 back/
 .env
 __pycache__/
-logs/
-*.pyc
 .pytest_cache/
-.env.docker
+logs/
+.git/
+*.pyc

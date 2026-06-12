@@ -24,3 +24,5 @@ def change_password(password_data: ChangePassword, db:Session=Depends(get_db),cu
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     return login_user(db, form_data) 
+
+ 
