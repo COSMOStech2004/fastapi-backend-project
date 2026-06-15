@@ -1,6 +1,9 @@
 from psycopg2 import IntegrityError
 from sqlalchemy.orm import Session
-from app.models.uer_models import  User    
+from app.models.uer_models import  User 
+from app.models.refresh_token_model import RefreshToken
+from datetime import datetime, timedelta
+from app.config import REFRESH_TOKEN_EXPIRE_DAYS
 from fastapi import HTTPException,status
 from app.security  import create_access_token, verify_password,hash_password,create_refresh_token,verify_refresh_token
 from app.logger import logger
@@ -30,6 +33,13 @@ def login_user(db: Session,user_data):
         raise HTTPException(status_code=400, detail= "Invalid email or password")
     access_token = create_access_token(data={"sub": str(user.id)})
     refresh_token = create_refresh_token(data={"sub": str(user.id)})
+    new_refresh_token = RefreshToken(
+        user_id=user.id,
+        token=refresh_token,
+        expires_at=datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    )
+    db.add(new_refresh_token)
+    db.commit()
     logger.info(f"User logged in: {user.id}")
     return {"access_token": access_token,"refresh_token": refresh_token, "token_type": "bearer"}
 
@@ -39,7 +49,24 @@ def refresh_access_token(db: Session, refresh_token: str):
         logger.warning(f"Invalid refresh token")
         raise HTTPException(status_code=401, detail="Invalid refresh token")
     
-    user = db.query(User).filter(User.id == user_id, User.is_deleted == False).first()
+    token_record = db.query(RefreshToken).filter(
+        RefreshToken.token == refresh_token,
+        RefreshToken.is_revoked == False
+    ).first()
+    
+    if token_record is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Refresh token revoked or not found"
+        )
+
+    if token_record.expires_at < datetime.utcnow():
+        raise HTTPException(
+            status_code=401,
+            detail="Refresh token expired"
+        )
+    
+    user = db.query(User).filter(User.id == token_record.user_id, User.is_deleted == False).first()
     if not user:
         logger.warning(f"User not found for refresh token: {user_id}")
         raise HTTPException(status_code=404, detail="User not found")
@@ -47,3 +74,21 @@ def refresh_access_token(db: Session, refresh_token: str):
     new_access_token = create_access_token(data={"sub": str(user.id)})
     logger.info(f"Access token refreshed for user: {user.id}")
     return {"access_token": new_access_token, "token_type": "bearer"}
+
+
+def logout_user(db:Session,refresh_token:str):
+    token_record = db.query(RefreshToken).filter(
+        RefreshToken.token == refresh_token,
+        RefreshToken.is_revoked == False
+    ).first()
+    
+    if token_record is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Refresh token revoked or not found"
+        )
+    
+    token_record.is_revoked = True
+    db.commit()
+    logger.info(f"User logged out, refresh token revoked: {token_record.user_id}")
+    return {"message": "Logged out successfully"}
