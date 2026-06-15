@@ -7,24 +7,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.exception import (
     http_exception_handler,
     validation_exception_handler,
-    
     general_exception_handler
 )
 from app.routers.auth import router as auth_router
 from app.routers.user_rotuers import router as user_router
 from app.routers.admin import router as admin_router
+from app.config import CORS_ORIGINS
 
 app = FastAPI()
-origins = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:5173",
-]
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

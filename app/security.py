@@ -4,7 +4,10 @@ from datetime import datetime, timedelta
 
 from app.config import (
     SECRET_KEY,
-    ALGORITHM
+    ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    REFRESH_TOKEN_EXPIRE_DAYS
+    
 )
 
 pwd_context = CryptContext(
@@ -53,4 +56,46 @@ def verify_access_token(token: str):
 
     except JWTError:
 
+        return None
+    
+def create_refresh_token(data: dict):
+    to_encode = data.copy()
+
+    expire = datetime.utcnow() + timedelta(
+        days=int(REFRESH_TOKEN_EXPIRE_DAYS)
+    )
+
+    to_encode.update({
+        "exp": expire,
+        "type": "refresh"
+    })
+
+    encoded_jwt = jwt.encode(
+        to_encode,
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+    return encoded_jwt
+
+def verify_refresh_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
+        token_type = payload.get("type")
+
+        if token_type != "refresh":
+            return None
+
+        user_id = payload.get("sub")
+
+        if user_id is None:
+            return None
+
+        return user_id
+
+    except JWTError:
         return None

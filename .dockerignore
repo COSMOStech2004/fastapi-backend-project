@@ -1,5 +1,6 @@
 back/
 .env
+.env.docker
 __pycache__/
 .pytest_cache/
 logs/

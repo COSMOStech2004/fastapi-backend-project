@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.database import get_db
 from sqlalchemy.orm import Session
 from app.shemas.auth_schema import (
-ChangePassword
+ChangePassword,RefreshTokenRequest
 )
 from app.dependencies.auth_dependencies import (get_current_user)
 
@@ -11,7 +11,8 @@ from app.models.uer_models import User
 
 from app.services.auth_service import (
     login_user,
-    change_user_password
+    change_user_password,
+    refresh_access_token
 )
 
 router = APIRouter()
@@ -25,4 +26,6 @@ def change_password(password_data: ChangePassword, db:Session=Depends(get_db),cu
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     return login_user(db, form_data) 
 
- 
+@router.post("/refresh")
+def refresh_token(refresh_token_data: RefreshTokenRequest, db: Session = Depends(get_db)):
+    return refresh_access_token(db, refresh_token_data.refresh_token)
