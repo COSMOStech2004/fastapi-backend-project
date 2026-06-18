@@ -55,7 +55,6 @@ def verify_access_token(token: str):
         return user_id
 
     except JWTError:
-
         return None
     
 def create_refresh_token(data: dict):

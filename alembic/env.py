@@ -10,9 +10,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from app.models.base import Base
 from app.models.audit_log_model import AuditLog
+from app.models.password_reset_model_token import PasswordResetToken
 from app.models.uer_models import User
 from app.models.refresh_token_model import RefreshToken
 from app.database import DATABASE_URL
+from app.models.email_verification_token_model import EmailVerificationToken
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

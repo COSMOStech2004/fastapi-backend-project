@@ -18,7 +18,9 @@ def get_current_user(token: str = Depends(oauth2_scheme),db: Session = Depends(g
 
     user = db.query(User).filter(
         User.id == user_id,
-        User.is_deleted == False
+        User.is_deleted == False,
+        User.is_active == True,
+        User.is_verified == True
     ).first()
 
     if user is None:

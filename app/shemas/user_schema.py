@@ -5,10 +5,10 @@ from typing import Optional, Literal, List
 
 
 class UserCreate(BaseModel):
-    name: str=Field(min_length=0, max_length=50)
+    name: str=Field(min_length=1, max_length=50)
     age: int=Field(ge=18, le=120)
     email: EmailStr
-    password: str=Field(min_length=0, description="Password must be at least 6 characters long")
+    password: str=Field(min_length=1, description="Password must be at least 6 characters long")
 
     
 class UserResponse(BaseModel):
@@ -31,17 +31,19 @@ class PaginatedUserResponse(BaseModel):
 
 class UserLogin(BaseModel):
     email: EmailStr
-    password: str=Field(min_length=6, description="Password must be at least 6 characters long")
+    password: str=Field(min_length=1, description="Password must be at least 6 characters long")
 
 class UpdateUser(BaseModel):
-    name: str=Field(min_length=3, max_length=50)
+    name: str=Field(min_length=1, max_length=50)
     age: int =Field(ge=18, le=120)
     email: EmailStr
 
 class PartialUpdateUser(BaseModel):
-     name: str | None = Field(default=None, min_length=3, max_length=50)
+     name: str | None = Field(default=None, min_length=1, max_length=50)
      age: int | None = Field(default=None, ge=18, le=120)
      email: EmailStr | None = Field(default=None)
 
 
+class DeactivateAccountRequest(BaseModel):
+    password: str = Field(min_length=1, max_length=100)
     
