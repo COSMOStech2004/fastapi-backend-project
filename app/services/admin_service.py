@@ -212,3 +212,39 @@ def get_all_users(
         "offset": offset,
         "data": users
     }
+
+def reactivate_user(db, user_id: int, admin_user):
+    user = db.query(User).filter(
+        User.id == user_id,
+        User.is_deleted == False
+    ).first()
+
+    if user is None:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    if user.is_active:
+        raise HTTPException(
+            status_code=400,
+            detail="User account is already active"
+        )
+
+    user.is_active = True
+    user.deactivated_at = None
+
+    create_audit_log(
+        db=db,
+        admin_id=admin_user.id,
+        target_user_id=user.id,
+        action="reactivate_user",
+        details=f"Admin {admin_user.email} reactivated user {user.email}"
+    )
+
+    db.commit()
+    db.refresh(user)
+
+    return {
+        "message": "User account reactivated successfully"
+    }

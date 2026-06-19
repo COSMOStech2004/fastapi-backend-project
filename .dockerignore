@@ -1,8 +1,8 @@
 back/
 .env
-__pycache__/
-logs/
-*.pyc
-.pytest_cache/
 .env.docker
-deployemetn.txt
+__pycache__/
+.pytest_cache/
+logs/
+.git/
+*.pyc
