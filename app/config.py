@@ -10,6 +10,7 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_PORT = os.getenv("DB_PORT")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
+DATABASE_URL = os.getenv("DATABASE_URL")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES","30"))
 REFRESH_TOKEN_EXPIRE_DAYS =int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS","7"))
 TEST_DB_HOST = os.getenv("TEST_DB_HOST")
@@ -22,6 +23,12 @@ BACKEND_CORS_ORIGINS = os.getenv(
     "BACKEND_CORS_ORIGINS",
     "http://localhost:3000,http://localhost:5173"
 )
+
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in BACKEND_CORS_ORIGINS.split(",")
+    if origin.strip()
+]
 
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = os.getenv("SMTP_PORT", "587")
@@ -45,8 +52,3 @@ ACCOUNT_LOCKOUT_MINUTES = os.getenv(
     "ACCOUNT_LOCKOUT_MINUTES",
     "15"
 )
-CORS_ORIGINS = [
-    origin.strip()
-    for origin in BACKEND_CORS_ORIGINS.split(",")
-    if origin.strip()
-]

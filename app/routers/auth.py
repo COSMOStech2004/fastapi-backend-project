@@ -8,14 +8,14 @@ ChangePassword,RefreshTokenRequest,LogoutRequest,ForgotPasswordRequest,ResetPass
 from app.dependencies.auth_dependencies import (get_current_user)
 from app.models.uer_models import User
 from app.dependencies.rate_limit_dependency import (login_rate_limit,forgot_password_rate_limit,resend_verification_rate_limit)
-from app.services.auth_service import (login_user,change_user_password,refresh_access_token,logout_user,logout_all_devices,forgot_password,reset_password,verify_email,resend_verification_email,get_active_sessions,revoke_session
+from app.services.auth_service import (login_user,change_password,refresh_access_token,logout_user,logout_all_devices,forgot_password,reset_password,verify_email,resend_verification_email,get_active_sessions,revoke_session
 )
 
 router = APIRouter()
 
 @router.put("/cpassword")
 def change_password(password_data: ChangePassword, db:Session=Depends(get_db),current_user: User=Depends(get_current_user) ):
-    return change_user_password(password_data,current_user,db)
+    return change_password(password_data,current_user,db)
 
 
 @router.post("/login")

@@ -5,3 +5,4 @@ logs/
 *.pyc
 .pytest_cache/
 .env.docker
+deployemetn.txt
