@@ -20,7 +20,12 @@ from app.services.user_service import (
 router = APIRouter()
 
 
-@router.post("/users", response_model=UserResponse)
+@router.get("/")
+def root():
+    return {"message": "Welcome to the anshik application!"}
+
+
+@router.post("/register", response_model=UserResponse)
 def add_user(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
