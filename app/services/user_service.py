@@ -12,6 +12,7 @@ from app.logger import logger
 from app.security import verify_password
 from app.services.email_service import send_email_verification_email
 
+
 def read_root():
     logger.info("Reading root endpoint")
     return {"message": "Backend is running successfully!"}

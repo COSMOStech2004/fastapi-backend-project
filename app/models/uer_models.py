@@ -23,4 +23,5 @@ class User(Base):
     locked_until = Column(DateTime,nullable=True)
     is_active = Column(Boolean,default=True,server_default="true",nullable=False)
     deactivated_at = Column(DateTime,nullable=True)
+    
 
