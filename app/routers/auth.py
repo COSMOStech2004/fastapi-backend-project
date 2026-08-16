@@ -14,7 +14,7 @@ from app.services.auth_service import (login_user,change_password,refresh_access
 router = APIRouter()
 
 @router.put("/cpassword")
-def change_password(password_data: ChangePassword, db:Session=Depends(get_db),current_user: User=Depends(get_current_user) ):
+def change_user_password(password_data: ChangePassword, db:Session=Depends(get_db),current_user: User=Depends(get_current_user) ):
     return change_password(password_data,current_user,db)
 
 

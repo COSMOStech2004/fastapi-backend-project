@@ -40,6 +40,9 @@ app.add_exception_handler(
     Exception,
     general_exception_handler
 )
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 
 app.include_router(
     auth_router,
