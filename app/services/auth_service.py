@@ -153,7 +153,8 @@ def refresh_access_token(db: Session, refresh_token: str):
     db.commit()
 
     logger.info(f"Access token refreshed for user: {user.id}")
-    return {"access_token": new_access_token, "token_type": "bearer"}
+    return {"access_token": new_access_token, "refresh_token": new_refresh_token,
+        "token_type": "bearer"}
 
 
 def logout_user(db:Session,refresh_token:str):

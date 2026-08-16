@@ -85,10 +85,7 @@ def create_user(db, user_data):
         )
     except Exception as e:
         logger.error(f"Failed to send verification email to {new_user.email}: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to send verification email. Please try again later."
-        )
+
     return new_user
 
 

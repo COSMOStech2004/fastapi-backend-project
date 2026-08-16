@@ -5,9 +5,7 @@ from app.shemas.user_schema import (
 UserCreate ,UserResponse,UpdateUser,PartialUpdateUser,DeactivateAccountRequest
 )
 from app.dependencies.auth_dependencies import (get_current_user)
-
 from app.models.uer_models import User
-
 from app.services.user_service import (
     get_user,
     partial_update_user_profile,
@@ -40,7 +38,8 @@ def get_profile(current_user: User = Depends(get_current_user)):
         "id": current_user.id,
         "name": current_user.name,
         "email": current_user.email,
-        "age": current_user.age
+        "age": current_user.age,
+        "role": current_user.role
     }
 
 @router.put("/profile", response_model=UserResponse)
